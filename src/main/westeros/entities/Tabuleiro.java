@@ -1,8 +1,6 @@
 package main.westeros.entities;
 
 import java.util.Random;
-import java.util.random.*;
-import westeros.enums.House;
 
 public class Tabuleiro  {
     // private Character personagem;
@@ -30,8 +28,7 @@ public class Tabuleiro  {
             colunaMax = 9;
         }
 
-        for (int i = 0; i < persona; i++){
-            Character p = persona[i];
+        for (Character p : persona){
             
             int lin, col;
 
@@ -41,7 +38,7 @@ public class Tabuleiro  {
             } while (tabuleiro[lin][col] != null);
 
             tabuleiro[lin][col] = p;
-            System.out.println("%s (%s) posicionado em [%d, %d]%n",
+            System.out.printf("%s (%s) posicionado em [%d, %d]%n",
                     p.getNome(), p.getCasa(), lin, col);
         }
 
@@ -49,12 +46,12 @@ public class Tabuleiro  {
 
     public void exibirTabuleiro(){
         for(int i = 0; i < linhas; i++){
-            for(int j= 0; j < colunas ; j++){
+            for(int j = 0; j < colunas; j++){
                 if(tabuleiro[i][j] == null){
-                    System.out.println(" [ ]");
+                    System.out.print(" [ ]");
                 } else { 
                     // exibe posicao e nome
-                    System.out.println("[%s]", tabuleiro[i][j].getCasa().name().substring(0, 3));
+                    System.out.printf("[%s]", tabuleiro[i][j].getCasa().name().substring(0, 3));
                 }
             }
             System.out.println();
