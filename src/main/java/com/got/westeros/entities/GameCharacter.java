@@ -42,6 +42,14 @@ public abstract class GameCharacter {
     public int getColuna() { return coluna; }
     public void setLinha(int linha) { this.linha = linha; }
     public void setColuna(int coluna) { this.coluna = coluna; }
+    
+    /**
+     * Retorna o alcance de ataque do personagem baseado em sua casa
+     * @return Alcance em células do tabuleiro
+     */
+    public int getAlcance() {
+        return casa.getAlcance();
+    }
 
     @Override
     public String toString() {
