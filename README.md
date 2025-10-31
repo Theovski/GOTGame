@@ -54,7 +54,7 @@ mvn clean
 
 ## Nomes e Matrícula
 
-Théo Magalhães Dias Almeida | 202365139A |
+Letícia Miyuki Ferreira Yamashita | 202269030A | Théo Magalhães Dias Almeida | 202365139A |
 Elias Jose Fadel Vieira | 202476020 |
 
 
