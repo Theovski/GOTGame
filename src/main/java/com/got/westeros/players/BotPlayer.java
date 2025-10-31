@@ -7,15 +7,6 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Random;
 
-/**
- * Jogador controlado por IA com estratégia básica.
- * Estratégia:
- * 1. Identifica o inimigo mais próximo
- * 2. Se está no alcance → ataca
- * 3. Se não está no alcance → move em direção ao inimigo
- * 4. Se não há inimigos → move aleatoriamente
- */
-
 public class BotPlayer extends Player {
     private Random random;
     private Tabuleiro tabuleiro;
@@ -31,13 +22,13 @@ public class BotPlayer extends Player {
     
     @Override
     public void realizarTurno() {
-        System.out.println(" BotPlayer.realizarTurno() foi chamado mas não deve ser usado.");
+        System.out.println(" BotPlayer.realizarTurno() foi chamado mas nao deve ser usado.");
         System.out.println("Use o TurnManager para gerenciar os turnos do bot.");
     }
     
     public int[] decidirMovimento(GameCharacter personagem, List<GameCharacter> todosPersonagens) {
         if (tabuleiro == null) {
-            System.out.println("Tabuleiro não definido para o bot!");
+            System.out.println("Tabuleiro nao definido para o bot!");
             return null;
         }
         
@@ -54,8 +45,8 @@ public class BotPlayer extends Player {
         int alcance = personagem.getAlcance();
         
         if (distancia <= alcance) {
-            System.out.println("Bot: " + personagem.getNome() + " já está no alcance, não precisa mover.");
-            return null; // Não move
+            System.out.println("Bot: " + personagem.getNome() + " ja esta no alcance, nao precisa mover.");
+            return null;
         }
 
         Position novaPosicao = Position.moverEmDirecao(posAtual, posInimigo);
@@ -69,7 +60,7 @@ public class BotPlayer extends Player {
         }
         
         System.out.println("Bot: " + personagem.getNome() + 
-            " move em direção a " + inimigoMaisProximo.getNome());
+            " move em direcao a " + inimigoMaisProximo.getNome());
         
         return new int[]{novaPosicao.getLinha(), novaPosicao.getColuna()};
     }
@@ -78,13 +69,16 @@ public class BotPlayer extends Player {
         List<GameCharacter> inimigosNoAlcance = encontrarInimigosNoAlcance(personagem, todosPersonagens);
         
         if (inimigosNoAlcance.isEmpty()) {
-            System.out.println("Bot: " + personagem.getNome() + " não tem alvos no alcance.");
+            System.out.println("Bot: " + personagem.getNome() + " nao tem alvos no alcance.");
             return null;
         }
         
-        GameCharacter alvo = inimigosNoAlcance.stream()
-            .min((a, b) -> Integer.compare(a.getVidaAtual(), b.getVidaAtual()))
-            .orElse(inimigosNoAlcance.get(0));
+        GameCharacter alvo = inimigosNoAlcance.get(0);
+        for (GameCharacter p : inimigosNoAlcance) {
+            if (p.getVidaAtual() < alvo.getVidaAtual()) {
+                alvo = p;
+            }
+        }
         
         System.out.println("Bot: " + personagem.getNome() + 
             " vai atacar " + alvo.getNome() + " (vida: " + alvo.getVidaAtual() + ")");
@@ -95,17 +89,22 @@ public class BotPlayer extends Player {
     private GameCharacter encontrarInimigoMaisProximo(GameCharacter personagem, List<GameCharacter> todosPersonagens) {
         Position posAtual = new Position(personagem.getLinha(), personagem.getColuna());
         
-        return todosPersonagens.stream()
-            .filter(p -> p.isVivo()) // Apenas vivos
-            .filter(p -> p.getCasa() != personagem.getCasa()) // Apenas inimigos
-            .min((a, b) -> {
-                Position posA = new Position(a.getLinha(), a.getColuna());
-                Position posB = new Position(b.getLinha(), b.getColuna());
-                int distA = Position.calcularDistancia(posAtual, posA);
-                int distB = Position.calcularDistancia(posAtual, posB);
-                return Integer.compare(distA, distB);
-            })
-            .orElse(null);
+        GameCharacter maisProximo = null;
+        int menorDistancia = 9999;
+        
+        for (GameCharacter p : todosPersonagens) {
+            if (p.isVivo() && p.getCasa() != personagem.getCasa()) {
+                Position posInimigo = new Position(p.getLinha(), p.getColuna());
+                int distancia = Position.calcularDistancia(posAtual, posInimigo);
+                
+                if (distancia < menorDistancia) {
+                    menorDistancia = distancia;
+                    maisProximo = p;
+                }
+            }
+        }
+        
+        return maisProximo;
     }
     
     private List<GameCharacter> encontrarInimigosNoAlcance(GameCharacter personagem, List<GameCharacter> todosPersonagens) {
@@ -149,7 +148,7 @@ public class BotPlayer extends Player {
             }
         }
         
-        System.out.println("Bot: " + personagem.getNome() + " não encontrou movimento válido.");
+        System.out.println("Bot: " + personagem.getNome() + " nao encontrou movimento valido.");
         return null;
     }
 
@@ -164,7 +163,7 @@ public class BotPlayer extends Player {
         };
         
         int melhorDirecao = -1;
-        int menorDistancia = Integer.MAX_VALUE;
+        int menorDistancia = 9999;
         
         for (int i = 0; i < direcoes.length; i++) {
             int novaLinha = linhaAtual + direcoes[i][0];
@@ -187,7 +186,7 @@ public class BotPlayer extends Player {
             int novaLinha = linhaAtual + direcoes[melhorDirecao][0];
             int novaColuna = colunaAtual + direcoes[melhorDirecao][1];
             
-            System.out.println("Bot: " + personagem.getNome() + " contorna obstáculo.");
+            System.out.println("Bot: " + personagem.getNome() + " contorna obstaculo.");
             return new int[]{novaLinha, novaColuna};
         }
         

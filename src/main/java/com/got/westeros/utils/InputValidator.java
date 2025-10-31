@@ -1,11 +1,6 @@
 package com.got.westeros.utils;
 
 import java.util.Scanner;
-import java.util.InputMismatchException;
-
-/**
- * Classe para garantir que apenas valores válidos sejam aceitos
- */
 
 public class InputValidator {
     
@@ -13,24 +8,20 @@ public class InputValidator {
         int valor;
         
         while (true) {
-            try {
-                System.out.print(mensagem);
-                
+            System.out.print(mensagem);
+            
+            if (scanner.hasNextInt()) {
                 valor = scanner.nextInt();
                 scanner.nextLine();
                 
                 if (valor >= min && valor <= max) {
                     return valor;
                 } else {
-                    System.out.println(" Valor inválido! Digite um número entre " + min + " e " + max + ".");
+                    System.out.println(" Valor invalido! Digite um numero entre " + min + " e " + max + ".");
                 }
-                
-            } catch (InputMismatchException e) {
+            } else {
                 scanner.nextLine();
-                System.out.println("Entrada inválida! Por favor, digite apenas números.");
-            } catch (Exception e) {
-                scanner.nextLine();
-                System.out.println("Erro inesperado: " + e.getMessage());
+                System.out.println("Entrada invalida! Por favor, digite apenas numeros.");
             }
         }
     }
@@ -39,18 +30,14 @@ public class InputValidator {
         int valor;
         
         while (true) {
-            try {
-                System.out.print(mensagem);
+            System.out.print(mensagem);
+            if (scanner.hasNextInt()) {
                 valor = scanner.nextInt();
                 scanner.nextLine();
                 return valor;
-                
-            } catch (InputMismatchException e) {
+            } else {
                 scanner.nextLine();
-                System.out.println("Entrada inválida! Por favor, digite apenas números.");
-            } catch (Exception e) {
-                scanner.nextLine();
-                System.out.println("Erro inesperado: " + e.getMessage());
+                System.out.println("Entrada invalida! Por favor, digite apenas numeros.");
             }
         }
     }
@@ -59,18 +46,13 @@ public class InputValidator {
         String valor;
         
         while (true) {
-            try {
-                System.out.print(mensagem);
-                valor = scanner.nextLine().trim();
-                
-                if (!valor.isEmpty()) {
-                    return valor;
-                } else {
-                    System.out.println("Campo obrigatório! Por favor, digite algo.");
-                }
-                
-            } catch (Exception e) {
-                System.out.println("Erro ao ler entrada: " + e.getMessage());
+            System.out.print(mensagem);
+            valor = scanner.nextLine().trim();
+            
+            if (!valor.isEmpty()) {
+                return valor;
+            } else {
+                System.out.println("Campo obrigatorio! Por favor, digite algo.");
             }
         }
     }
@@ -84,7 +66,7 @@ public class InputValidator {
             if (valor.length() >= minLength) {
                 return valor;
             } else {
-                System.out.println("O texto deve ter no mínimo " + minLength + " caracteres!");
+                System.out.println("O texto deve ter no minimo " + minLength + " caracteres!");
             }
         }
     }
@@ -98,32 +80,21 @@ public class InputValidator {
             
             if (valor.equals("s") || valor.equals("sim")) {
                 return true;
-            } else if (valor.equals("n") || valor.equals("nao") || valor.equals("não")) {
+            } else if (valor.equals("n") || valor.equals("nao") || valor.equals("nao")) {
                 return false;
             } else {
-                System.out.println("Opção inválida! Digite 'S' para Sim ou 'N' para Não.");
+                System.out.println("Opcao invalida! Digite 'S' para Sim ou 'N' para Nao.");
             }
         }
     }
 
     public static int validarIndice(Scanner scanner, String mensagem, int tamanhoArray) {
         if (tamanhoArray <= 0) {
-            throw new IllegalArgumentException("Tamanho do array deve ser maior que 0");
+            System.out.println("Tamanho do array deve ser maior que 0");
+            return -1;
         }
         
         return validarInteiro(scanner, mensagem, 0, tamanhoArray - 1);
-    }
-    
-    public static void exibirErro(String mensagem) {
-        System.out.println(mensagem);
-    }
-
-    public static void exibirSucesso(String mensagem) {
-        System.out.println(mensagem);
-    }
-    
-    public static void exibirAviso(String mensagem) {
-        System.out.println(mensagem);
     }
     
     public static void aguardarEnter(Scanner scanner) {
@@ -132,13 +103,8 @@ public class InputValidator {
     }
     
     public static void limparTela() {
-        try {
-            System.out.print("\033[H\033[2J");
-            System.out.flush();
-        } catch (Exception e) {
-            for (int i = 0; i < 50; i++) {
-                System.out.println();
-            }
+        for (int i = 0; i < 50; i++) {
+            System.out.println();
         }
     }
 }

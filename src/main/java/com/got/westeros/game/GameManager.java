@@ -20,8 +20,8 @@ public class GameManager {
     }
     
     public void iniciarJogo() {
-        System.out.println("BATALHA DAS CASAS DE WESTEROS  ⚔️");
-        System.out.println("        Um jogo tático inspirado em Game of Thrones");
+        System.out.println("BATALHA DAS CASAS DE WESTEROS");
+        System.out.println("        Um jogo tatico inspirado em Game of Thrones");
     
         System.out.println();
         
@@ -86,27 +86,29 @@ public class GameManager {
             String nome = InputValidator.validarString(scanner, "  Nome: ", 2);
             
             System.out.println("  Casa: ");
-            System.out.println("    1 STARK - STARK (Defesa, Alcance: 1)");
-            System.out.println("    2 LANNISTER - LANNISTER (Ataque, Alcance: 3)");
-            System.out.println("    3 TARGARYEN - TARGARYEN (Poder, Alcance: 5)");
+            System.out.println("    1 STARK (Defesa, Alcance: 1)");
+            System.out.println("    2 LANNISTER (Ataque, Alcance: 3)");
+            System.out.println("    3 TARGARYEN (Poder, Alcance: 5)");
             
             int casaEscolha = InputValidator.validarInteiro(scanner, "  Escolha: ", 1, 3);
             
             House casa;
-            switch (casaEscolha) {
-                case 1: casa = House.STARK; break;
-                case 2: casa = House.LANNISTER; break;
-                case 3: casa = House.TARGARYEN; break;
-                default: 
-                    System.out.println("  Opção inválida. Usando STARK.");
-                    casa = House.STARK;
+            if (casaEscolha == 1) {
+                casa = House.STARK;
+            } else if (casaEscolha == 2) {
+                casa = House.LANNISTER;
+            } else if (casaEscolha == 3) {
+                casa = House.TARGARYEN;
+            } else {
+                System.out.println("  Opcao invalida. Usando STARK.");
+                casa = House.STARK;
             }
             
             GameCharacter personagem = criarPersonagem(nome, casa);
             time.add(personagem);
             
             String charName = personagem.getNome();
-            System.out.println("  Personagem criado: " + charName + 
+            System.out.println("  " + charName + 
                 " (" + casa.name() + ") - Vida: " + casa.getVidaMaxima());
         }
         
@@ -126,17 +128,19 @@ public class GameManager {
     }
     
     private GameCharacter criarPersonagem(String nome, House casa) {
-        switch (casa) {
-            case STARK: return new Stark(nome);
-            case LANNISTER: return new Lannister(nome);
-            case TARGARYEN: return new Targaryen(nome);
-            default: return new Stark(nome);
+        if (casa == House.STARK) {
+            return new Stark(nome);
+        } else if (casa == House.LANNISTER) {
+            return new Lannister(nome);
+        } else if (casa == House.TARGARYEN) {
+            return new Targaryen(nome);
         }
+        return new Stark(nome);
     }
     
     private void executarPartida() {
         System.out.println();
-        System.out.println("INÍCIO DA PARTIDA");
+        System.out.println("INICIO DA PARTIDA");
         
         System.out.println("Posicionando personagens no tabuleiro...");
         System.out.println();
@@ -167,7 +171,7 @@ public class GameManager {
         this.replayManager = turnManager.getReplayManager();
         
         System.out.println();
-        System.out.println("Tudo pronto! A batalha começa agora!");
+        System.out.println("Tudo pronto! A batalha comeca agora!");
         
         turnManager.loopTurnos();
         
@@ -175,10 +179,13 @@ public class GameManager {
     }
     
     private void declararVencedor() {
-        Player vencedor = jogadores.stream()
-            .filter(Player::temPersonagensVivos)
-            .findFirst()
-            .orElse(null);
+        Player vencedor = null;
+        for (Player p : jogadores) {
+            if (p.temPersonagensVivos()) {
+                vencedor = p;
+                break;
+            }
+        }
             
         if (vencedor != null) {
             System.out.println();
@@ -188,57 +195,51 @@ public class GameManager {
             for (GameCharacter p : vencedor.getPersonagens()) {
                 if (p.isVivo()) {
                     String charName = p.getNome();
-            System.out.println("  Personagem criado: " + charName + 
+            System.out.println("  " + charName + 
                 " (" + p.getCasa().name() + ") - Vida: " + p.getVidaAtual() + "/" + p.getCasa().getVidaMaxima());
                 }
             }
             
-            replayManager.registrarAcao("VITÓRIA: " + vencedor.getNome());
+            replayManager.registrarAcao("VITORIA: " + vencedor.getNome());
         } else {
             System.out.println("EMPATE");
             System.out.println("  Todos os personagens foram derrotados!");
         }
     }
     
-    /**
-     * Exibe tutorial explicando as características de cada casa
-     */
     private void exibirTutorialCasas() {
         System.out.println();
         System.out.println("TUTORIAL DAS CASAS DE WESTEROS");
         
-        // Casa STARK
-        System.out.println("\n CASA STARK - O Inverno Está Chegando");
+        System.out.println("\n CASA STARK - O Inverno Esta Chegando");
         System.out.println("  Especialidade: DEFESA");
         System.out.println("  Vida: 60 HP (a mais alta!)");
-        System.out.println("  Alcance: 1 célula (corpo a corpo)");
+        System.out.println("  Alcance: 1 celula (corpo a corpo)");
         System.out.println("  Habilidade: Reduz 20% do dano recebido");
         System.out.println("  Estilo: Tanque defensivo, aguenta muito dano");
-        System.out.println("  Estratégia: Aproxime-se do inimigo e resista aos ataques");
+        System.out.println("  Estrategia: Aproxime-se do inimigo e resista aos ataques");
         
-        // Casa LANNISTER
-        System.out.println("\n CASA LANNISTER - Ouça-me Rugir");
+        System.out.println("\n CASA LANNISTER - Ouca-me Rugir");
         System.out.println("  Especialidade: ATAQUE");
         System.out.println("  Vida: 50 HP (equilibrada)");
-        System.out.println("  Alcance: 3 células (médio alcance)");
+        System.out.println("  Alcance: 3 celulas (medio alcance)");
         System.out.println("  Habilidade: +15% de dano em todos os ataques");
-        System.out.println("  Estilo: Lutador balanceado e versátil");
-        System.out.println("  Estratégia: Mantenha distância média e cause muito dano");
+        System.out.println("  Estilo: Lutador balanceado e versatil");
+        System.out.println("  Estrategia: Mantenha distancia media e cause muito dano");
         
-        // Casa TARGARYEN
         System.out.println("\n CASA TARGARYEN - Fogo e Sangue");
         System.out.println("  Especialidade: ALCANCE");
         System.out.println("  Vida: 45 HP (a mais baixa)");
-        System.out.println("  Alcance: 5 células (longo alcance!)");
+        System.out.println("  Alcance: 5 celulas (longo alcance!)");
         System.out.println("  Habilidade: Ignora toda a defesa do inimigo");
-        System.out.println("  Estilo: Atirador de elite, vidro de canhão");
-        System.out.println("  Estratégia: Ataque de longe, evite combate próximo");
+        System.out.println("  Estilo: Atirador de elite, vidro de canhao");
+        System.out.println("  Estrategia: Ataque de longe, evite combate proximo");
         
         System.out.println();
         System.out.println("DICAS IMPORTANTES:");
-        System.out.println("  O movimento é limitado a 1 célula por turno (8 direções)");
-        System.out.println("  Distância é medida pela maior diferença (Chebyshev)");
-        System.out.println("  Exemplo: Diagonal [0,0] → [1,1] = 1 célula de distância");
+        System.out.println("  O movimento e limitado a 1 celula por turno (8 direcoes)");
+        System.out.println("  Distancia e medida pela maior diferenca (Chebyshev)");
+        System.out.println("  Exemplo: Diagonal [0,0] para [1,1] = 1 celula de distancia");
         System.out.println("  Crie um time balanceado com diferentes casas!");
         
         InputValidator.aguardarEnter(scanner);

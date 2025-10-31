@@ -15,7 +15,13 @@ public class Position {
     public void setColuna(int coluna) { this.coluna = coluna; }
     
     public static int calcularDistancia(Position p1, Position p2) {
-        return Math.max(Math.abs(p1.linha - p2.linha), Math.abs(p1.coluna - p2.coluna));
+        int diffLinha = Math.abs(p1.linha - p2.linha);
+        int diffColuna = Math.abs(p1.coluna - p2.coluna);
+        
+        if (diffLinha > diffColuna) {
+            return diffLinha;
+        }
+        return diffColuna;
     }
 
     public static boolean estaNoAlcance(Position origem, Position alvo, int alcance) {
@@ -27,8 +33,19 @@ public class Position {
         int deltaLinha = destino.linha - origem.linha;
         int deltaColuna = destino.coluna - origem.coluna;
 
-        int direcaoLinha = Integer.compare(deltaLinha, 0);
-        int direcaoColuna = Integer.compare(deltaColuna, 0);
+        int direcaoLinha = 0;
+        if (deltaLinha > 0) {
+            direcaoLinha = 1;
+        } else if (deltaLinha < 0) {
+            direcaoLinha = -1;
+        }
+        
+        int direcaoColuna = 0;
+        if (deltaColuna > 0) {
+            direcaoColuna = 1;
+        } else if (deltaColuna < 0) {
+            direcaoColuna = -1;
+        }
         
         return new Position(
             origem.linha + direcaoLinha,

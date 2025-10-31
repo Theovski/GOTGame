@@ -50,41 +50,40 @@ public class TurnManager {
     public void loopTurnos() {
         int numTurno = 1;
         
-        replayManager.registrarAcao("INÍCIO DO JOGO");
+        replayManager.registrarAcao("INICIO DO JOGO");
         replayManager.registrarAcao("Personagens participantes: " + personagemAtivo.size());
 
-        try {
-            while (jogoContinua()) {
-                System.out.println("RODADA " + numTurno);
-                replayManager.registrarAcao("\n>>> RODADA " + numTurno + " <<<");
-                
-                for (GameCharacter personagemAtual : personagemAtivo) {
-                    if (personagemAtual.isVivo()) {
-                        List<GameCharacter> equipe = getEquipe(personagemAtual);
-                        tabuleiro.setEquipeAtual(equipe);
-                        
-                        if (isBot(personagemAtual)) {
-                            BotPlayer bot = botsMap.get(personagemAtual);
-                            TurnoBot turnoBot = new TurnoBot(personagemAtual, tabuleiro, bot, personagemAtivo, replayManager);
-                            turnoBot.executarTurno();
-                        } else {
-                            Turno t1 = new Turno(personagemAtual, tabuleiro, teclado, replayManager);
-                            t1.executarTurno();
-                        }
-                        
-                        if (!jogoContinua()) {
-                            anunciarVencedor();
+        while (jogoContinua()) {
+            System.out.println("RODADA " + numTurno);
+            replayManager.registrarAcao("\n>>> RODADA " + numTurno + " <<<");
+            
+            for (GameCharacter personagemAtual : personagemAtivo) {
+                if (personagemAtual.isVivo()) {
+                    List<GameCharacter> equipe = getEquipe(personagemAtual);
+                    tabuleiro.setEquipeAtual(equipe);
+                    
+                    if (isBot(personagemAtual)) {
+                        BotPlayer bot = botsMap.get(personagemAtual);
+                        TurnoBot turnoBot = new TurnoBot(personagemAtual, tabuleiro, bot, personagemAtivo, replayManager);
+                        turnoBot.executarTurno();
+                    } else {
+                        Turno t1 = new Turno(personagemAtual, tabuleiro, teclado, replayManager);
+                        int resultado = t1.executarTurno();
+                        if (resultado == -1) {
+                            System.out.println("PARTIDA ABANDONADA");
+                            System.out.println("\nO jogador " + personagemAtual.getNome() + " abandonou a partida.");
+                            replayManager.registrarAcao("O jogador " + personagemAtual.getNome() + " abandonou a partida.");
                             return;
                         }
                     }
+                    
+                    if (!jogoContinua()) {
+                        anunciarVencedor();
+                        return;
+                    }
                 }
-                numTurno++;
             }
-        } catch (AbandonoPartidaException e) {
-            System.out.println("PARTIDA ABANDONADA");
-            System.out.println("\n" + e.getMessage());
-            replayManager.registrarAcao("⚠️ " + e.getMessage());
-            return;
+            numTurno++;
         }
         
         anunciarVencedor();
@@ -93,10 +92,13 @@ public class TurnManager {
     private void anunciarVencedor() {
         System.out.println("FIM DE JOGO");
         
-        GameCharacter vencedor = personagemAtivo.stream()
-            .filter(GameCharacter::isVivo)
-            .findFirst()
-            .orElse(null);
+        GameCharacter vencedor = null;
+        for (GameCharacter p : personagemAtivo) {
+            if (p.isVivo()) {
+                vencedor = p;
+                break;
+            }
+        }
         
         if (vencedor != null) {
             String nomeVencedor = vencedor.getNome();
@@ -111,16 +113,37 @@ public class TurnManager {
     }
 
     public boolean jogoContinua() {
-        long personagensVivos = personagemAtivo.stream().filter(GameCharacter::isVivo).count();
+        int personagensVivos = 0;
+        for (GameCharacter p : personagemAtivo) {
+            if (p.isVivo()) {
+                personagensVivos++;
+            }
+        }
+        
         if (personagensVivos < 2) {
             return false;
         }
         
-        long casasDiferentes = personagemAtivo.stream()
-                .filter(GameCharacter::isVivo)
-                .map(GameCharacter::getCasa)
-                .distinct()
-                .count();
+        int casasDiferentes = 0;
+        boolean temStark = false;
+        boolean temLannister = false;
+        boolean temTargaryen = false;
+        
+        for (GameCharacter p : personagemAtivo) {
+            if (p.isVivo()) {
+                if (p.getCasa().name().equals("STARK")) {
+                    temStark = true;
+                } else if (p.getCasa().name().equals("LANNISTER")) {
+                    temLannister = true;
+                } else if (p.getCasa().name().equals("TARGARYEN")) {
+                    temTargaryen = true;
+                }
+            }
+        }
+        
+        if (temStark) casasDiferentes++;
+        if (temLannister) casasDiferentes++;
+        if (temTargaryen) casasDiferentes++;
         
         return casasDiferentes > 1;
     }

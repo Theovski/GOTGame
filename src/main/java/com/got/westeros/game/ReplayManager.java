@@ -33,35 +33,35 @@ public class ReplayManager {
     
     public void mostrarReplay() {
         if (acoes.isEmpty()) {
-            System.out.println("Nenhuma ação foi registrada ainda.");
+            System.out.println("Nenhuma acao foi registrada ainda.");
             return;
         }
         
         System.out.println("REPLAY COMPLETO DO JOGO");
-        System.out.println("Total de ações: " + acoes.size());
+        System.out.println("Total de acoes: " + acoes.size());
         System.out.println();
         
         for (int i = 0; i < acoes.size(); i++) {
-            System.out.printf("%3d. %s\n", (i + 1), acoes.get(i));
+            System.out.println((i + 1) + ". " + acoes.get(i));
         }
     }
     
     public void mostrarReplayPasso(Scanner scanner) {
         if (acoes.isEmpty()) {
-            System.out.println("Nenhuma ação foi registrada ainda.");
+            System.out.println("Nenhuma acao foi registrada ainda.");
             return;
         }
         
         System.out.println("REPLAY PASSO A PASSO");
-        System.out.println("Total de ações: " + acoes.size());
-        System.out.println("Pressione ENTER para avançar ou digite 'S' para sair");
+        System.out.println("Total de acoes: " + acoes.size());
+        System.out.println("Pressione ENTER para avancar ou digite 'S' para sair");
         
         
         for (int i = 0; i < acoes.size(); i++) {
-            System.out.printf("\n%s Ação %d/%d:%s\n", (i + 1), acoes.size());
+            System.out.println("\nAcao " + (i + 1) + "/" + acoes.size() + ":");
             System.out.println(acoes.get(i));
             
-            System.out.print("\n[Enter] Próxima | [S] Sair: ");
+            System.out.print("\n[Enter] Proxima | [S] Sair: ");
             String input = scanner.nextLine().trim().toLowerCase();
             
             if (input.equals("s") || input.equals("sair")) {
@@ -75,47 +75,44 @@ public class ReplayManager {
     
     public void menuReplay(Scanner scanner) {
         if (acoes.isEmpty()) {
-            System.out.println("Nenhuma ação foi registrada ainda.");
+            System.out.println("Nenhuma acao foi registrada ainda.");
             return;
         }
 
         System.out.println("MENU DE REPLAY");
-        System.out.println("1. Ver replay completo (todas as ações)");
+        System.out.println("1. Ver replay completo (todas as acoes)");
         System.out.println("2. Ver replay passo a passo");
-        System.out.println("3. Ver últimas 10 ações");
+        System.out.println("3. Ver ultimas 10 acoes");
         System.out.println("4. Voltar");
         
-        int opcao = InputValidator.validarInteiro(scanner, "\nEscolha uma opção: ", 1, 4);
+        int opcao = InputValidator.validarInteiro(scanner, "\nEscolha uma opcao: ", 1, 4);
         
-        switch (opcao) {
-            case 1:
-                mostrarReplay();
-                InputValidator.aguardarEnter(scanner);
-                break;
-            case 2:
-                mostrarReplayPasso(scanner);
-                break;
-            case 3:
-                mostrarUltimasAcoes(10);
-                InputValidator.aguardarEnter(scanner);
-                break;
-            case 4:
-                return;
+        if (opcao == 1) {
+            mostrarReplay();
+            InputValidator.aguardarEnter(scanner);
+        } else if (opcao == 2) {
+            mostrarReplayPasso(scanner);
+        } else if (opcao == 3) {
+            mostrarUltimasAcoes(10);
+            InputValidator.aguardarEnter(scanner);
         }
     }
 
     public void mostrarUltimasAcoes(int quantidade) {
         if (acoes.isEmpty()) {
-            System.out.println("Nenhuma ação foi registrada ainda.");
+            System.out.println("Nenhuma acao foi registrada ainda.");
             return;
         }
         
-        int inicio = Math.max(0, acoes.size() - quantidade);
+        int inicio = acoes.size() - quantidade;
+        if (inicio < 0) {
+            inicio = 0;
+        }
         
-        System.out.println("ÚLTIMAS " + quantidade + " AÇÕES");
+        System.out.println("ULTIMAS " + quantidade + " ACOES");
         
         for (int i = inicio; i < acoes.size(); i++) {
-            System.out.printf("%3d. %s\n", (i + 1), acoes.get(i));
+            System.out.println((i + 1) + ". " + acoes.get(i));
         }
     }
     

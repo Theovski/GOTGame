@@ -21,7 +21,6 @@ public abstract class GameCharacter {
     public void receberDano(double dano) {
         if (dano <= 0) return;
 
-        // Redução especial dos STARK (-20%)
         if (this.casa == House.STARK) {
             dano *= (1 + casa.getReducaoDano());
         }
@@ -32,8 +31,6 @@ public abstract class GameCharacter {
             vivo = false;
         }
     }
-
-    // Getters e Setters
     public String getNome() { return nome; }
     public House getCasa() { return casa; }
     public int getVidaAtual() { return vidaAtual; }
@@ -43,17 +40,12 @@ public abstract class GameCharacter {
     public void setLinha(int linha) { this.linha = linha; }
     public void setColuna(int coluna) { this.coluna = coluna; }
     
-    /**
-     * Retorna o alcance de ataque do personagem baseado em sua casa
-     * @return Alcance em células do tabuleiro
-     */
     public int getAlcance() {
         return casa.getAlcance();
     }
 
     @Override
     public String toString() {
-        return String.format("%s (%s) - Vida: %d/%d - Pos: [%d,%d]", 
-            nome, casa.name(), vidaAtual, casa.getVidaMaxima(), linha, coluna);
+        return nome + " (" + casa.name() + ") - Vida: " + vidaAtual + "/" + casa.getVidaMaxima() + " - Pos: [" + linha + "," + coluna + "]";
     }
 }

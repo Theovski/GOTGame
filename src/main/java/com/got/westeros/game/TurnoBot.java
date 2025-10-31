@@ -23,19 +23,13 @@ public class TurnoBot {
 
     public void executarTurno() {
         String charName = personagem.getNome();
-        replayManager.registrarAcao("=== TURNO BOT: " + charName + " (" + personagem.getCasa().name() + ") ===");
+        replayManager.registrarAcao("TURNO BOT: " + charName + " (" + personagem.getCasa().name() + ")");
         
         System.out.println("\n Vez do Bot: " + charName);
         System.out.println(personagem.toString());
         
         tabuleiro.setPersonagemAtual(personagem);
         tabuleiro.exibirTabuleiro();
-
-        try {
-            Thread.sleep(500);
-        } catch (InterruptedException e) {
-
-        }
 
         realizarMovimentoBot();
         tabuleiro.exibirTabuleiro();
@@ -49,12 +43,12 @@ public class TurnoBot {
     private void realizarMovimentoBot() {
         System.out.println("\n FASE DE MOVIMENTO (BOT)");
         Position posAtual = new Position(personagem.getLinha(), personagem.getColuna());
-        System.out.println("Posição atual: " + posAtual);
+        System.out.println("Posicao atual: " + posAtual);
         
         int[] movimento = bot.decidirMovimento(personagem, todosPersonagens);
         
         if (movimento == null) {
-            String mensagem = personagem.getNome() + " (Bot) decidiu não se mover";
+            String mensagem = personagem.getNome() + " (Bot) decidiu nao se mover";
             System.out.println(mensagem);
             replayManager.registrarAcao(mensagem);
             return;
@@ -82,7 +76,7 @@ public class TurnoBot {
         int[] alvoPos = bot.decidirAtaque(personagem, todosPersonagens);
         
         if (alvoPos == null) {
-            String mensagem = personagem.getNome() + " (Bot) não atacou";
+            String mensagem = personagem.getNome() + " (Bot) nao atacou";
             System.out.println(mensagem);
             replayManager.registrarAcao(mensagem);
             return;
@@ -94,7 +88,7 @@ public class TurnoBot {
         GameCharacter alvo = tabuleiro.getPersonagem(posLinhaAlvo, posColunaAlvo);
        
         if (alvo == null) {
-            System.out.println("Erro na IA: Não há personagem na posição escolhida.");
+            System.out.println("Erro na IA: Nao ha personagem na posicao escolhida.");
             return;
         }
 
@@ -104,8 +98,7 @@ public class TurnoBot {
         int alcance = personagem.getAlcance();
         
         if (distancia > alcance) {
-            String mensagem = String.format("Erro na IA: Alvo fora do alcance! Distância: %d | Alcance: %d",
-                distancia, alcance);
+            String mensagem = "Erro na IA: Alvo fora do alcance! Distancia: " + distancia + " | Alcance: " + alcance;
             System.out.println(mensagem);
             replayManager.registrarAcao(personagem.getNome() + " (Bot) falhou ao atacar - fora do alcance");
             return;
@@ -119,16 +112,15 @@ public class TurnoBot {
         System.out.println("\n " + atakker + " (Bot) ataca " + target + "!");
 
         alvo.receberDano(danoCausado);
-        System.out.println(target + " sofreu " + String.format("%.1f", danoCausado) + " de dano.");
+        System.out.println(target + " sofreu " + danoCausado + " de dano.");
         
-        String mensagemAtaque = String.format("%s (Bot) atacou %s causando %.1f de dano (Distância: %d)", 
-            atakker, target, danoCausado, distancia);
+        String mensagemAtaque = atakker + " (Bot) atacou " + target + " causando " + danoCausado + " de dano (Distancia: " + distancia + ")";
         replayManager.registrarAcao(mensagemAtaque);
         
         if (!alvo.isVivo()) {
             String mensagemMorte = target + " foi derrotado!";
             System.out.println(mensagemMorte);
-            replayManager.registrarAcao("💀 " + mensagemMorte);
+            replayManager.registrarAcao(mensagemMorte);
             tabuleiro.removerPersonagem(alvo);
         } else {
             System.out.println(target + " ficou com " + alvo.getVidaAtual() + " de vida.");

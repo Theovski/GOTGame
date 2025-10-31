@@ -3,11 +3,6 @@ package com.got.westeros.entities;
 import java.util.Random;
 import java.util.List;
 
-/**
- * Tabuleiro 10x10 do jogo.
- * Gerencia posicionamento, movimento e visualização dos personagens.
- */
-
 public class Tabuleiro  {
     private final int linhas = 10;
     private final int colunas = 10;
@@ -55,9 +50,8 @@ public class Tabuleiro  {
             p.setLinha(lin);  
             p.setColuna(col);
 
-            String charName= p.getNome();
-            System.out.printf("  %s posicionado em [%d,%d]%n",
-                    charName, lin, col);
+            String charName = p.getNome();
+            System.out.println("  " + charName + " posicionado em [" + lin + "," + col + "]");
         }
 
     }
@@ -78,7 +72,7 @@ public class Tabuleiro  {
         
         System.out.print("     ");
         for (int j = 0; j < colunas; j++) {
-            System.out.printf("  %d ", j);
+            System.out.print("  " + j + " ");
         }
         System.out.println();
         
@@ -92,7 +86,10 @@ public class Tabuleiro  {
         System.out.println("╗");
         
         for(int i = 0; i < linhas; i++){
-            System.out.printf("  %d ║", i);
+            if (i < 10) {
+                System.out.print("  " + i + " ");
+            }
+            System.out.print("║");
             
             for(int j = 0; j < colunas; j++){
                 if(tabuleiro[i][j] == null){
@@ -154,11 +151,11 @@ public class Tabuleiro  {
     }
     
     private void exibirLegenda() {
-        System.out.println("\n    ═══ LEGENDA ═══");
+        System.out.println("\n    LEGENDA");
         
         System.out.print("    ");
         System.out.print("S - Stark  ");
-        System.out.print("L - Lannister");
+        System.out.print("L - Lannister  ");
         System.out.print("T - Targaryen");
         System.out.println();
     }
@@ -175,12 +172,12 @@ public class Tabuleiro  {
         int diffC = Math.abs(novaColuna - cAtual);
 
         if (diffL > 1 || diffC > 1 || (diffL == 0 && diffC == 0)) {
-            System.out.println("Movimento inválido: Só é permitido mover 1 casa (ortogonal ou diagonal)");
+            System.out.println("Movimento invalido: So e permitido mover 1 casa (ortogonal ou diagonal)");
             return false;
         }
 
         if (getPersonagem(novaLinha, novaColuna) != null) {
-            System.out.println("Movimento inválido: A casa de destino já está ocupada.");
+            System.out.println("Movimento invalido: A casa de destino ja esta ocupada.");
             return false;
         }
 
